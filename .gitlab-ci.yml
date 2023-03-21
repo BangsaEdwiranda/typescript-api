@@ -1,0 +1,54 @@
+image: node:8.9.0
+
+before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - npm install
+
+stages:
+  - dev-test
+  - dev
+  - staging
+  - prod
+
+# lint and test are two different jobs in the same stage.
+# This allows us to run these two in parallel and making build faster
+
+dev-test:
+  stage: dev-test
+  script:
+    - npm run build
+    - bash deploy/dev-test/deploy.sh
+  artifacts:
+    paths: 
+      - dist/
+  only:
+    - dev-test
+
+dev:
+  stage: dev
+  script:
+    - npm run build
+    - bash deploy/dev/deploy.sh
+  artifacts:
+    paths: 
+      - dist/
+  only:
+    - dev
+
+staging:
+  stage: staging
+  script:
+    - npm run build
+    - bash deploy/prod/deploy.sh
+  only:
+    - prod
+
+
+prod:
+  stage: prod
+  script:
+    - npm run build
+    - bash deploy/prod/deploy.sh
+  only:
+    - prod
+

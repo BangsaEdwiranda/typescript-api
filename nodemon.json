@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "ext": "ts",
+  "ignore": ["src/**/*.spec.ts"],
+  "exec": "cross-env TS_NODE_FILES=true NODE_CONFIG_DIR=src/config node -r ts-node/register -r tsconfig-paths/register src/main.ts"
+}
